@@ -1,27 +1,37 @@
 function gameOflife(arr) {
     let output = []
+    //up and down loop (y)
     for (i = 0; i < arr.length; i++) {
         output.push(arr[i])
+        //side to side loop (x)
         for (j = 0; j < arr[i].length; j++) {
+            //count neighbours
             function neighbours(i, j) {
                 let counter = 0;
+                //look up (if you can)
                 if (i > 0) {
                     if (arr[i - 1][j] !== ".") { counter++ }
                 }
-                if (i < 9) {
+                //look Down (if you can)
+                if (i < (arr[i].length - 1)) {
                     if (arr[i + 1][j] !== ".") { counter++ }
                 }
+                //look left (if you can)
                 if (j > 0) {
                     if (arr[i][j - 1] !== ".") { counter++ }
                 }
-                if (j < 9) {
+                //look right (if you can)
+                if (j < (arr[j].length - 1)) {
                     if (arr[i][j + 1] !== ".") { counter++ }
                 }
+                //return number of neighbours
                 return counter
             }
+            //Give Life
             if (neighbours(i, j) === 3) {
                 output[i][j] = "O"
             }
+            //Kill
             if (neighbours(i, j) === (0 || 4)) {
                 output[i][j] = "X"
             }
