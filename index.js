@@ -1,99 +1,77 @@
-function gameOflife(arr) {
-    //change X's to .'s
-    for (i = 0; i < arr.length; i++) {
-        for (j = 0; j < arr[i].length; j++) {
-            if (arr[i][j] === "-") arr[i][j] = ".";
-        }
-    }
-    let output = []
-    //up and down loop (y)
-    for (i = 0; i < arr.length; i++) {
-        //copy current row to output array
-        output.push(arr[i])
-        //side to side loop (x)
-        for (j = 0; j < arr[i].length; j++) {
-            //count neighbours
-            function neighbours(i, j) {
-                let counter = 0;
-                //look up (if you can)
-                if (i > 0) {
-                    if (arr[i - 1][j] !== ".") { counter++ }
-                }
-                //look Down (if you can)
-                if (i < (arr[i].length - 1)) {
-                    if (arr[i + 1][j] !== ".") { counter++ }
-                }
-                //look left (if you can)
-                if (j > 0) {
-                    if (arr[i][j - 1] !== ".") { counter++ }
-                }
-                //look right (if you can)
-                if (j < (arr[j].length - 1)) {
-                    if (arr[i][j + 1] !== ".") { counter++ }
-                }
-                //return number of neighbours
-                return counter
+function gameOflife (arr) {
+    let output = [];
+    //change -'s to .'s
+    arr.forEach((itm, idx) => {
+        itm.forEach((subItm, subIdx) => {
+            subItm === "-" ? arr[idx][subIdx] = "." : null;
+        });
+    });
+    arr.forEach((itm, idx) => {
+        output.push([]);        //add empty index to output arr
+        itm.forEach((subItm, subIdx) => {
+            let counter = 0;
+            //count UP (if you can)
+            if (idx > 0) {
+                arr[idx - 1][subIdx] !== "." ? counter++ : null;
+                //diagonal
+                subIdx > 0 && arr[idx - 1][subIdx - 1] !== "." ? counter++ : null;
+                subIdx < (arr[idx].length - 1) && (arr[idx - 1][subIdx + 1] !== ".") ? counter++ : null;
             }
-            //Give Life
-            if (neighbours(i, j) > 1) {
-                output[i][j] = "O"
-            }
-            //Kill
-            if (neighbours(i, j) === (0 || 4)) {
-                output[i][j] = "-"
-            }
-        }
-    }
-    return output
+            //count DOWN (if you can)
+            if (idx < arr.length - 1) {
+                arr[idx + 1][subIdx] !== "." ? counter++ : null;
+                //diagonal
+                subIdx > 0 && arr[idx + 1][subIdx - 1] !== "." ? counter++ : null;
+                subIdx < (arr[idx].length - 1) && arr[idx + 1][subIdx + 1] !== "." ? counter++ : null;
+            } 
+            //count LEFT and RIGHT (if you can)
+            subIdx > 0 && arr[idx][subIdx - 1] !== "." ? counter++ : null;
+            subIdx < (arr[idx].length - 1) && arr[idx][subIdx + 1] !== "." ? counter++ : null;
+
+            counter === 3 ? output[idx].push("O") :                     //give life
+                counter < 2 || counter > 3 ? output[idx].push("-") :    //kill
+                    output[idx].push(subItm);                           //do nothing
+        });
+    });
+    return output;
 }
-
-console.log(gameOflife([
-    [".", "O", ".", ".", ".", "O", "O", ".", ".", "."],
-    ["O", ".", ".", ".", ".", "O", "O", ".", ".", "."],
-    [".", "O", ".", ".", ".", ".", ".", "O", ".", "."],
-    [".", ".", ".", "O", "O", "O", "O", ".", ".", "."],
-    [".", ".", ".", "O", "O", "O", "O", ".", ".", "."],
-    [".", ".", ".", "O", "O", "O", "O", ".", ".", "."],
-    [".", ".", ".", "O", "O", "O", "O", ".", ".", "."],
-    [".", ".", "O", "O", ".", ".", "O", "O", ".", "."],
-    [".", "O", "O", ".", ".", ".", ".", "O", "O", "."],
+//input 1
+console.table(gameOflife([
     [".", ".", ".", ".", ".", ".", ".", ".", ".", "."],
-]))
-console.log(gameOflife([
-    ['O', 'O', '.', '.', '.', 'O', 'O', '.', '.', '.'],
-    ['O', 'O', '.', '.', '.', 'O', 'O', 'O', '.', '.'],
-    ['O', 'O', '.', '.', '.', 'O', '-', 'O', '.', '.'],
-    ['.', '.', '.', 'O', 'O', '-', 'O', 'O', '.', '.'],
-    ['.', '.', '.', 'O', '-', '-', 'O', 'O', '.', '.'],
-    ['.', '.', '.', 'O', '-', '-', 'O', 'O', '.', '.'],
-    ['.', '.', 'O', '-', 'O', 'O', 'O', 'O', '.', '.'],
-    ['.', 'O', '-', 'O', 'O', 'O', 'O', 'O', 'O', '.'],
-    ['.', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', '.'],
-    ['.', '.', '.', '.', '.', '.', '.', '.', '.', '.']
-]))
-console.log(gameOflife([
-    ['O', 'O', '.', '.', '.', 'O', 'O', 'O', '.', '.'],
-    ['O', 'O', '.', '.', '.', 'O', 'O', 'O', '.', '.'],
-    ['O', 'O', '.', '.', 'O', 'O', '-', 'O', '.', '.'],
-    ['.', '.', '.', 'O', 'O', 'O', '-', 'O', '.', '.'],
-    ['.', '.', '.', 'O', 'O', 'O', '-', 'O', '.', '.'],
-    ['.', '.', 'O', 'O', 'O', '-', '-', 'O', '.', '.'],
-    ['.', 'O', 'O', '-', '-', '-', '-', 'O', 'O', '.'],
-    ['.', 'O', '-', '-', '-', '-', '-', '-', 'O', '.'],
-    ['.', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', '.'],
-    ['.', '.', '.', '.', '.', '.', '.', '.', '.', '.']
-]))
-console.log(gameOflife([
-    ['O', 'O', '.', '.', '.', 'O', 'O', 'O', '.', '.'],
-    ['O', 'O', '.', '.', 'O', '-', 'O', 'O', '.', '.'],
-    ['O', 'O', '.', 'O', '-', 'O', 'O', 'O', '.', '.'],
-    ['.', '.', '.', 'O', '-', 'O', 'O', 'O', '.', '.'],
-    ['.', '.', 'O', '-', '-', 'O', 'O', 'O', '.', '.'],
-    ['.', 'O', '-', 'O', 'O', 'O', 'O', 'O', 'O', '.'],
-    ['.', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', '.'],
-    ['.', 'O', 'O', 'O', 'O', 'O', 'O', '-', 'O', '.'],
-    ['.', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', '.'],
-    ['.', '.', '.', '.', '.', '.', '.', '.', '.', '.']
-]))
-
-
+    ["O", "O", "O", ".", ".", ".", ".", "O", "O", "."],
+    [".", ".", ".", ".", ".", ".", ".", "O", "O", "."],
+    [".", ".", ".", ".", ".", ".", ".", ".", ".", "."],
+    [".", ".", ".", ".", ".", ".", ".", ".", ".", "."],
+    [".", ".", ".", ".", ".", ".", ".", ".", ".", "."],
+    [".", ".", ".", ".", ".", ".", "O", "O", ".", "."],
+    [".", "O", "O", "O", ".", ".", "O", ".", ".", "."],
+    ["O", "O", "O", ".", ".", ".", ".", ".", ".", "O"],
+    [".", ".", ".", ".", ".", ".", ".", ".", "O", "O"]
+]));
+//input 2 = output 1
+console.table(gameOflife([
+    ['.', 'O', '.', '-', '-', '-', '-', '.', '.', '-'],
+    ['-', 'O', '-', '-', '-', '-', '.', 'O', 'O', '.'],
+    ['.', 'O', '.', '-', '-', '-', '.', 'O', 'O', '.'],
+    ['-', '-', '-', '-', '-', '-', '-', '.', '.', '-'],
+    ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-'],
+    ['-', '-', '-', '-', '-', '-', '.', '.', '-', '-'],
+    ['-', '.', 'O', '.', '-', '.', 'O', 'O', '-', '-'],
+    ['O', '-', '-', 'O', '-', '.', 'O', 'O', '.', '-'],
+    ['O', '-', '-', 'O', '-', '-', '-', '.', 'O', 'O'],
+    ['.', 'O', '.', '-', '-', '-', '-', '-', 'O', 'O']
+]));
+//input 3 = output 2
+//this shows the game is working corrently beause 3 patterns should loop and 1 sould remain static
+console.table(gameOflife([
+    [".", ".", ".", ".", ".", ".", ".", ".", ".", "."],
+    ["O", "O", "O", ".", ".", ".", ".", "O", "O", "."],
+    [".", ".", ".", ".", ".", ".", ".", "O", "O", "."],
+    [".", ".", ".", ".", ".", ".", ".", ".", ".", "."],
+    [".", ".", ".", ".", ".", ".", ".", ".", ".", "."],
+    [".", ".", ".", ".", ".", ".", ".", ".", ".", "."],
+    [".", ".", ".", ".", ".", ".", "O", "O", ".", "."],
+    [".", "O", "O", "O", ".", ".", "O", ".", ".", "."],
+    ["O", "O", "O", ".", ".", ".", ".", ".", ".", "O"],
+    [".", ".", ".", ".", ".", ".", ".", ".", "O", "O"]
+]));
